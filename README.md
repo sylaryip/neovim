@@ -70,7 +70,10 @@
 
 VS Code 自己管理折叠，Neovim 在 vscode-neovim 下**没有自己的 fold**（折叠范围
 由 VS Code 计算）。因此早期直接用 `zc` 会报 `E490: No fold found`——因为 Neovim
-的 fold 系统里根本没有可折叠区域。本配置把折叠键**桥接**到 VS Code 命令解决：
+的 fold 系统里根本没有可折叠区域。本配置把折叠键**桥接**到 VS Code 命令解决
+（这些绑定写在 Neovim 的 `init.lua` 里、用 `vscode.action('editor.fold')` 触发，
+**不是**写在 VS Code 的 `keybindings.json`；`keybindings.json` 只管 `Cmd+D` 转发
+与 `j/k` 跳过折叠行）：
 
 | 按键 | 桥接到 | 作用 |
 |---|---|---|
