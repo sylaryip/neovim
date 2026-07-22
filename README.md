@@ -91,6 +91,19 @@ VS Code 自己管理折叠，Neovim 在 vscode-neovim 下**没有自己的 fold*
 >
 > 这些键是 Neovim 侧映射，只在 vscode-neovim 模式（非纯终端 nvim）下生效。
 
+> **仍然弹 `E490: No fold found` 怎么解决**：说明桥接映射根本没生效，`zc` 还在
+> 走 Neovim 原生 fold（空的），而不是走 `editor.fold`。按顺序排查：
+> 1. **确认映射存在**：Normal 模式下敲 `:nmap zc`。若显示
+>    `zc  * <Cmd>call VSCodeNotify('editor.fold')<CR>`（或类似），说明桥接已加载；
+>    若显示 `No mapping found`，就是 `init.lua` 没被加载 → 看第 2 步。
+> 2. **确认 init.lua 被加载**：VS Code 里 `neovimInitVimPaths` 必须指向本仓库的
+>    `init.lua`（见 `vscode/settings.json`）。改完执行命令面板
+>    `VSCode Neovim: Reload Configuration`，或直接重启 VS Code。
+> 3. **确认没被别的映射覆盖**：`:verbose nmap zc` 会打印这条映射「最后是在哪个
+>    文件设置的」。若来源不是本 `init.lua`，说明被其它配置抢了，删掉冲突项即可。
+> 4. 以上都对但仍报错 → 用 `:messages` 看 Neovim 启动是否有 Lua 报错（例如插件
+>    加载失败导致后续 keymap 没执行），修掉报错后重载。
+
 ### 多光标（vscode-multi-cursor.nvim 的 `mc` 体系）
 
 这套插件是「自洽体系」：用 `mc` 系列把光标建进插件自己的 STATE，再用 `mi/ma`
