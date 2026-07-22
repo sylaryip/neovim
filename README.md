@@ -68,16 +68,28 @@
 
 ### 折叠（桥接 VS Code）
 
-VS Code 自管折叠系统，Neovim 的 `zc/zo` 原本不生效，这里已桥接：
+VS Code 自己管理折叠，Neovim 在 vscode-neovim 下**没有自己的 fold**（折叠范围
+由 VS Code 计算）。因此早期直接用 `zc` 会报 `E490: No fold found`——因为 Neovim
+的 fold 系统里根本没有可折叠区域。本配置把折叠键**桥接**到 VS Code 命令解决：
 
-| 按键 | 作用 |
-|---|---|
-| `zc` | 折叠当前 |
-| `zo` | 展开当前 |
-| `zM` | 折叠全部 |
-| `zR` | 展开全部 |
-| `zC` | 递归折叠 |
-| `zO` | 递归展开 |
+| 按键 | 桥接到 | 作用 |
+|---|---|---|
+| `zc` | `editor.fold` | 折叠光标下最内层区域 |
+| `zo` | `editor.unfold` | 展开当前 |
+| `zM` | `editor.foldAll` | 折叠全部 |
+| `zR` | `editor.unfoldAll` | 展开全部 |
+| `zC` | `editor.foldRecursively` | 从光标处递归折叠 |
+| `zO` | `editor.unfoldRecursively` | 从光标处递归展开 |
+
+> **排查 / 前提**：`editor.fold` 只在「光标所在行属于某个可折叠区域」时生效。
+> VS Code 的折叠范围来自语法（`editor.foldingStrategy: "auto"`，默认）或缩进
+> （`"indentation"`）。若按 `zc` **没反应**，通常是：
+> 1. 光标不在函数 / 类 / 代码块起始行 —— 先把光标移到块首再试；
+> 2. 该文件既没有语法折叠又是无缩进文本 —— 在 `vscode/settings.json` 里加
+>    `"editor.foldingStrategy": "indentation"`，改用缩进折叠（对任意缩进文件都
+>    有效，如 Python / YAML / 多数代码）。
+>
+> 这些键是 Neovim 侧映射，只在 vscode-neovim 模式（非纯终端 nvim）下生效。
 
 ### 多光标（vscode-multi-cursor.nvim 的 `mc` 体系）
 
