@@ -21,6 +21,34 @@
 
 ---
 
+## 快速安装
+
+```bash
+# 1. Neovim 配置：克隆到 ~/.config/nvim
+git clone https://github.com/sylaryip/neovim.git ~/.config/nvim
+
+# 2. VS Code 键位（覆盖前先备份旧的）
+cp "$HOME/Library/Application Support/Code/User/keybindings.json" ~/keybindings.json.bak 2>/dev/null
+cp ~/.config/nvim/vscode/keybindings.json "$HOME/Library/Application Support/Code/User/keybindings.json"
+
+# 3. VS Code 设置：把 vscode/settings.json 里的 5 个键手动并入你的 settings.json
+#    （不要整体覆盖，否则会丢失其它设置）
+
+# 4. 可选：安装 Skill 到 WorkBuddy
+cp -R ~/.config/nvim/skill ~/.workbuddy/skills/vscode-neovim-config
+```
+
+完成后重启 VS Code，或命令面板执行 `VSCode Neovim: Reload Configuration`。
+
+> 第 2 步的 `keybindings.json` 是**整体覆盖**（仓库这份是精选键位）。若你已有大量
+> 自定义键位，建议手动把 `vscode/keybindings.json` 的内容并入自己的文件；
+> `settings.json` 同理，只并入 vscode-neovim 那几个键即可。
+
+**其它平台**：Linux 的 VS Code 用户目录是 `~/.config/Code/User`；Windows 是
+`%APPDATA%\Code\User`（并把 `git clone` 目标改为 `~/AppData/Local/nvim`）。
+
+---
+
 ## 设计原则
 
 - **不装任何「需要 Neovim 自己画 UI」的插件**（Telescope / nvim-tree / lualine /
