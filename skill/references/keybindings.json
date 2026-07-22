@@ -1,0 +1,57 @@
+[
+    // Normal mode: cursorDown/cursorUp 跳过折叠不展开
+    {
+        "key": "j",
+        "command": "cursorDown",
+        "when": "editorTextFocus && neovim.mode == 'normal'"
+    },
+    {
+        "key": "k",
+        "command": "cursorUp",
+        "when": "editorTextFocus && neovim.mode == 'normal'"
+    },
+    {
+        "key": "down",
+        "command": "cursorDown",
+        "when": "editorTextFocus && neovim.mode == 'normal'"
+    },
+    {
+        "key": "up",
+        "command": "cursorUp",
+        "when": "editorTextFocus && neovim.mode == 'normal'"
+    },
+    // Visual char mode (v): 字符级扩展选区，跳过折叠
+    {
+        "key": "j",
+        "command": "cursorDownSelect",
+        "when": "editorTextFocus && neovim.mode == 'v'"
+    },
+    {
+        "key": "k",
+        "command": "cursorUpSelect",
+        "when": "editorTextFocus && neovim.mode == 'v'"
+    },
+    {
+        "key": "down",
+        "command": "cursorDownSelect",
+        "when": "editorTextFocus && neovim.mode == 'v'"
+    },
+    {
+        "key": "up",
+        "command": "cursorUpSelect",
+        "when": "editorTextFocus && neovim.mode == 'v'"
+    },
+    // Cmd+D (仅 Normal 模式): 转发给 neovim 的 <C-d> -> mciw*
+    // 标记光标下的词到插件 STATE 并跳到下一个相同词, 全程停在 Normal。
+    // 连按 Cmd+D 逐个加选, 加够后按 mi(左)/ma(右) 进全光标编辑, Esc 结束。
+    {
+        "key": "cmd+d",
+        "command": "vscode-neovim.send",
+        "args": "<C-d>",
+        "when": "editorTextFocus && neovim.mode == 'normal'"
+    }
+    // 注: Cmd+Shift+L(全选相同词) 未接入插件 —— 插件的 selectHighlights
+    // 同样不回填 STATE, mi/ma 用不上; 需要多处一起改就连按 Cmd+D。
+    // Visual line mode (V) 不配置，交给 neovim 原生处理
+    // 代价是 V 模式下 j/k 可能展开折叠，但至少整行选区是正确的
+]

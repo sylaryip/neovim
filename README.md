@@ -114,10 +114,19 @@ VS Code 自管折叠系统，Neovim 的 `zc/zo` 原本不生效，这里已桥�
 
 ---
 
-## VS Code `keybindings.json`
+## VS Code 配置（keybindings.json / settings.json）
 
-多光标的 `Cmd+D` 需要在 VS Code 里把按键转发给 Neovim。打开
-`keybindings.json`（命令面板 `Preferences: Open Keyboard Shortcuts (JSON)`），加入：
+本仓库附带两份 VS Code 配置文件，放在 `vscode/` 目录下，可直接拷到 VS Code
+用户配置目录使用：
+
+- **macOS**：`~/Library/Application Support/Code/User/`
+- **Windows**：`%APPDATA%\Code\User\`
+- **Linux**：`~/.config/Code/User/`
+
+### `vscode/keybindings.json`
+
+包含：Normal / Visual 模式下 `j/k/↑/↓` 跳过折叠（不展开）、以及 `Cmd+D` 转发到
+Neovim 的 `<C-d>`（多光标，见上文「多光标」一节）。完整内容见仓库文件，关键条目：
 
 ```json
 {
@@ -130,6 +139,44 @@ VS Code 自管折叠系统，Neovim 的 `zc/zo` 原本不生效，这里已桥�
 
 > 关键：`when` 限定在 **Normal** 模式才转发，避免把人甩进 Insert 模式。
 > 其它 VS Code 原生的 `Cmd+D`（如非 Neovim 模式）不受影响。
+> `Cmd+Shift+L`（全选相同词）未接入插件——其 `selectHighlights` 不回填插件
+> STATE，`mi/ma` 用不上；多处一起改请连按 `Cmd+D`。
+
+### `vscode/settings.json`
+
+vscode-neovim 所需的扩展设置（Neovim 可执行文件路径、init 入口、性能亲和性、
+键位分发）。可直接合并进你的 `settings.json`：
+
+```json
+{
+  "vscode-neovim.neovimExecutablePaths.darwin": "/opt/homebrew/bin/nvim",
+  "vscode-neovim.neovimInitVimPaths.darwin": "~/.config/nvim/init.lua",
+  "vscode-neovim.useWSL": false,
+  "extensions.experimental.affinity": { "asvetliakov.vscode-neovim": 1 },
+  "keyboard.dispatch": "keyCode"
+}
+```
+
+> Intel Mac 请把 `neovimExecutablePaths.darwin` 改为 `/usr/local/bin/nvim`。
+> 其余平台对应键为 `neovimExecutablePaths.win32` / `neovimExecutablePaths.linux`。
+
+---
+
+## 附带 Skill（WorkBuddy）
+
+`skill/` 目录是一份可直接导入 WorkBuddy 的 Skill，封装了本配置的全部经验
+（单文件结构、leap、多光标 `mc` 体系、折叠桥接、`<leader>` 桥接、keybindings）：
+
+```
+skill/
+├── SKILL.md              # Skill 说明与触发条件
+└── references/
+    ├── init.lua          # 可直接用的 init.lua
+    └── keybindings.json  # 配套的 VS Code keybindings
+```
+
+导入方式：把 `skill/` 内的内容放到 `~/.workbuddy/skills/vscode-neovim-config/`
+（即 `SKILL.md` 与 `references/` 落在该目录），在 WorkBuddy 中即可使用。
 
 ---
 
@@ -137,13 +184,23 @@ VS Code 自管折叠系统，Neovim 的 `zc/zo` 原本不生效，这里已桥�
 
 ```
 ~/.config/nvim/
-├── init.lua        # 全部配置（单文件）
-├── lazy-lock.json  # 插件版本锁定（保证可复现）
-└── .gitignore
+├── init.lua            # 全部配置（单文件）
+├── lazy-lock.json      # 插件版本锁定（保证可复现）
+├── README.md           # 本文档
+├── .gitignore
+├── vscode/             # VS Code 侧配置
+│   ├── keybindings.json
+│   └── settings.json
+└── skill/              # 可导入 WorkBuddy 的 Skill
+    ├── SKILL.md
+    └── references/
+        ├── init.lua
+        └── keybindings.json
 ```
 
-所有配置集中在 `init.lua`，没有 `lua/` 子目录——这是有意为之，保持单文件、
-零 UI 依赖、易于同步。
+所有 Neovim 配置集中在 `init.lua`，没有 `lua/` 子目录——这是有意为之，保持
+单文件、零 UI 依赖、易于同步。VS Code 侧配置与 Skill 单独放在 `vscode/` 和
+`skill/`，随仓库一起版本管理。
 
 ---
 

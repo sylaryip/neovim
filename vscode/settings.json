@@ -1,0 +1,15 @@
+{
+    // ========== vscode-neovim 核心配置 ==========
+    // Apple Silicon (M1/M2/M3/M4) 用这个路径；Intel Mac 改为 /usr/local/bin/nvim
+    "vscode-neovim.neovimExecutablePaths.darwin": "/opt/homebrew/bin/nvim",
+    // 指向本仓库的 init.lua（Neovim 配置入口）
+    "vscode-neovim.neovimInitVimPaths.darwin": "~/.config/nvim/init.lua",
+    // 非 WSL 环境保持 false
+    "vscode-neovim.useWSL": false,
+    // 性能优化（macOS 必开）：把扩展固定到某个 Electron 进程亲和性
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
+    },
+    // 禁用 VS Code 自带的 Ctrl/Cmd 键位冲突解析，交给 Neovim 处理
+    "keyboard.dispatch": "keyCode"
+}
